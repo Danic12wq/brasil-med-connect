@@ -1,15 +1,17 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User, UserPlus, Menu } from "lucide-react";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <div className="bg-medical-500 text-white p-1.5 rounded-md">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -38,19 +40,28 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          <a href="#" className="text-gray-700 hover:text-medical-600 font-medium">Início</a>
-          <a href="#" className="text-gray-700 hover:text-medical-600 font-medium">Como funciona</a>
-          <a href="#" className="text-gray-700 hover:text-medical-600 font-medium">Para médicos</a>
-          <a href="#" className="text-gray-700 hover:text-medical-600 font-medium">Contato</a>
+          <a href="/" className="text-gray-700 hover:text-medical-600 font-medium">Início</a>
+          <a href="#features" className="text-gray-700 hover:text-medical-600 font-medium">Como funciona</a>
+          <a href="#for-doctors" className="text-gray-700 hover:text-medical-600 font-medium">Para médicos</a>
+          <a href="#contact" className="text-gray-700 hover:text-medical-600 font-medium">Contato</a>
         </nav>
 
         {/* Auth Buttons - Desktop */}
         <div className="hidden md:flex items-center space-x-3">
-          <Button variant="outline" size="sm" className="flex items-center">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center"
+            onClick={() => navigate('/login')}
+          >
             <User className="mr-2 h-4 w-4" />
             Entrar
           </Button>
-          <Button size="sm" className="bg-medical-500 hover:bg-medical-600 flex items-center">
+          <Button 
+            size="sm" 
+            className="bg-medical-500 hover:bg-medical-600 flex items-center"
+            onClick={() => navigate('/register')}
+          >
             <UserPlus className="mr-2 h-4 w-4" />
             Cadastre-se
           </Button>
@@ -69,17 +80,26 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="md:hidden px-4 pt-2 pb-4 bg-white border-t animate-fade-in">
           <nav className="flex flex-col space-y-3">
-            <a href="#" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Início</a>
-            <a href="#" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Como funciona</a>
-            <a href="#" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Para médicos</a>
-            <a href="#" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Contato</a>
+            <a href="/" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Início</a>
+            <a href="#features" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Como funciona</a>
+            <a href="#for-doctors" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Para médicos</a>
+            <a href="#contact" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Contato</a>
           </nav>
           <div className="flex flex-col space-y-2 mt-4">
-            <Button variant="outline" size="sm" className="flex items-center justify-center">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center justify-center"
+              onClick={() => navigate('/login')}
+            >
               <User className="mr-2 h-4 w-4" />
               Entrar
             </Button>
-            <Button size="sm" className="bg-medical-500 hover:bg-medical-600 flex items-center justify-center">
+            <Button 
+              size="sm" 
+              className="bg-medical-500 hover:bg-medical-600 flex items-center justify-center"
+              onClick={() => navigate('/register')}
+            >
               <UserPlus className="mr-2 h-4 w-4" />
               Cadastre-se
             </Button>
