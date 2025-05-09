@@ -1,14 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Eye, EyeOff, User, Mail, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -17,9 +16,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Form validation schema
 const formSchema = z.object({
@@ -33,6 +32,14 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState<'patient' | 'doctor'>('patient');
   const navigate = useNavigate();
+  const { signUp, loading, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,15 +52,7 @@ const Register = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // This will be implemented after connecting Supabase
-    toast({
-      title: "Preparando para cadastro",
-      description: "Esta funcionalidade será implementada após conectar o Supabase.",
-    });
-    
-    console.log(values);
-    // Navigate back to home for now - will implement actual registration later
-    navigate('/');
+    await signUp(values.email, values.password, values.userType, values.name);
   };
 
   const toggleUserType = (type: 'patient' | 'doctor') => {
@@ -78,6 +77,7 @@ const Register = () => {
               type="button"
               className={`flex-1 py-3 ${userType === 'patient' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
               onClick={() => toggleUserType('patient')}
+              disabled={loading}
             >
               Sou Paciente
             </button>
@@ -85,6 +85,7 @@ const Register = () => {
               type="button"
               className={`flex-1 py-3 ${userType === 'doctor' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
               onClick={() => toggleUserType('doctor')}
+              disabled={loading}
             >
               Sou Médico
             </button>
@@ -104,6 +105,7 @@ const Register = () => {
                           placeholder="Seu nome completo" 
                           {...field}
                           className="pl-10"
+                          disabled={loading}
                         />
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                       </div>
@@ -126,6 +128,7 @@ const Register = () => {
                           placeholder="seu.email@exemplo.com" 
                           {...field}
                           className="pl-10"
+                          disabled={loading}
                         />
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                       </div>
@@ -148,11 +151,13 @@ const Register = () => {
                           placeholder="Crie uma senha segura" 
                           {...field}
                           className="pr-10"
+                          disabled={loading}
                         />
                         <button 
                           type="button"
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                           onClick={() => setShowPassword(!showPassword)}
+                          disabled={loading}
                         >
                           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -164,8 +169,21 @@ const Register = () => {
               />
 
               <div className="pt-2">
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-                  Criar Conta <ArrowRight className="ml-2" size={18} />
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Criando conta...
+                    </>
+                  ) : (
+                    <>
+                      Criar Conta <ArrowRight className="ml-2" size={18} />
+                    </>
+                  )}
                 </Button>
               </div>
             </form>

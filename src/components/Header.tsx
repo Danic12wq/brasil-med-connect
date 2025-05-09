@@ -2,11 +2,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { User, UserPlus, Menu } from "lucide-react";
+import { User, UserPlus, LogOut, Menu } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, user, signOut } = useAuth();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -48,23 +50,48 @@ const Header = () => {
 
         {/* Auth Buttons - Desktop */}
         <div className="hidden md:flex items-center space-x-3">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex items-center"
-            onClick={() => navigate('/login')}
-          >
-            <User className="mr-2 h-4 w-4" />
-            Entrar
-          </Button>
-          <Button 
-            size="sm" 
-            className="bg-medical-500 hover:bg-medical-600 flex items-center"
-            onClick={() => navigate('/register')}
-          >
-            <UserPlus className="mr-2 h-4 w-4" />
-            Cadastre-se
-          </Button>
+          {isAuthenticated ? (
+            <>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center"
+                onClick={() => navigate(user?.user_type === 'patient' ? '/dashboard' : '/doctor/dashboard')}
+              >
+                <User className="mr-2 h-4 w-4" />
+                Minha Conta
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost"
+                className="flex items-center"
+                onClick={() => signOut()}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center"
+                onClick={() => navigate('/login')}
+              >
+                <User className="mr-2 h-4 w-4" />
+                Entrar
+              </Button>
+              <Button 
+                size="sm" 
+                className="bg-medical-500 hover:bg-medical-600 flex items-center"
+                onClick={() => navigate('/register')}
+              >
+                <UserPlus className="mr-2 h-4 w-4" />
+                Cadastre-se
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -86,23 +113,48 @@ const Header = () => {
             <a href="#contact" className="text-gray-700 hover:text-medical-600 py-2 font-medium">Contato</a>
           </nav>
           <div className="flex flex-col space-y-2 mt-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center justify-center"
-              onClick={() => navigate('/login')}
-            >
-              <User className="mr-2 h-4 w-4" />
-              Entrar
-            </Button>
-            <Button 
-              size="sm" 
-              className="bg-medical-500 hover:bg-medical-600 flex items-center justify-center"
-              onClick={() => navigate('/register')}
-            >
-              <UserPlus className="mr-2 h-4 w-4" />
-              Cadastre-se
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center justify-center"
+                  onClick={() => navigate(user?.user_type === 'patient' ? '/dashboard' : '/doctor/dashboard')}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Minha Conta
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  className="flex items-center justify-center"
+                  onClick={() => signOut()}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sair
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center justify-center"
+                  onClick={() => navigate('/login')}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Entrar
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="bg-medical-500 hover:bg-medical-600 flex items-center justify-center"
+                  onClick={() => navigate('/register')}
+                >
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Cadastre-se
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

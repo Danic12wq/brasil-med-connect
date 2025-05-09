@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Eye, EyeOff, Mail, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,9 +16,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Form validation schema
 const formSchema = z.object({
@@ -29,6 +29,14 @@ const formSchema = z.object({
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { signIn, loading, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,15 +47,7 @@ const Login = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // This will be implemented after connecting Supabase
-    toast({
-      title: "Preparando para login",
-      description: "Esta funcionalidade será implementada após conectar o Supabase.",
-    });
-    
-    console.log(values);
-    // Navigate back to home for now - will implement actual login later
-    navigate('/');
+    await signIn(values.email, values.password);
   };
 
   return (
@@ -77,6 +77,7 @@ const Login = () => {
                           placeholder="seu.email@exemplo.com" 
                           {...field}
                           className="pl-10"
+                          disabled={loading}
                         />
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                       </div>
@@ -99,11 +100,13 @@ const Login = () => {
                           placeholder="Sua senha" 
                           {...field}
                           className="pr-10"
+                          disabled={loading}
                         />
                         <button 
                           type="button"
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                           onClick={() => setShowPassword(!showPassword)}
+                          disabled={loading}
                         >
                           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -123,8 +126,21 @@ const Login = () => {
               </div>
 
               <div className="pt-2">
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-                  Entrar <ArrowRight className="ml-2" size={18} />
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Entrando...
+                    </>
+                  ) : (
+                    <>
+                      Entrar <ArrowRight className="ml-2" size={18} />
+                    </>
+                  )}
                 </Button>
               </div>
             </form>
