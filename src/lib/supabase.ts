@@ -1,12 +1,28 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// These will be populated once the user connects their Supabase project
-// through the Lovable Supabase integration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Check for required Supabase connection details
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Show informative error if Supabase is not connected
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error(`
+    ⚠️ Supabase connection details missing!
+    
+    You must connect this Lovable project to Supabase:
+    1. Click the green Supabase button at the top right of the interface
+    2. Follow the steps to connect to your Supabase project
+    
+    This will automatically set up the required environment variables.
+  `);
+}
+
+// Create the Supabase client with available connection details
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder-url.supabase.co', 
+  supabaseAnonKey || 'placeholder-key'
+);
 
 // Define types for our database tables
 export type User = {
