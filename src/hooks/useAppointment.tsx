@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -61,15 +62,27 @@ export const useAppointment = (doctorId: string | undefined, userId: string | un
       
       if (error) throw error;
       
+      // Extract specialty name safely
+      let specialtyName = '';
+      
+      if (data.specialty) {
+        if (Array.isArray(data.specialty)) {
+          // Handle array case
+          if (data.specialty.length > 0 && data.specialty[0]) {
+            specialtyName = String(data.specialty[0].name || '');
+          }
+        } else {
+          // Handle object case
+          specialtyName = String(data.specialty.name || '');
+        }
+      }
+      
       // Transform data to match DoctorDetails interface
       return {
         id: data.id,
         full_name: data.full_name,
         specialty: {
-          // Fix the type issue by properly checking the specialty data structure
-          name: Array.isArray(data.specialty) 
-                ? (data.specialty.length > 0 ? String(data.specialty[0]?.name || '') : '') 
-                : String(data.specialty?.name || '')
+          name: specialtyName
         }
       } as DoctorDetails;
     },
