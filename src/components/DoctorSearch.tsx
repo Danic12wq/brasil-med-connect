@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
@@ -40,8 +39,8 @@ const DoctorSearch = () => {
       return;
     }
     
-    // For now just show a message, in the future we'll redirect to scheduling page
-    toast.success("Funcionalidade de agendamento em breve!");
+    // Navigate to the scheduling page
+    navigate(`/schedule/${doctorId}`);
   };
 
   return (

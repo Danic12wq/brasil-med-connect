@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Heart, Clock, Check } from "lucide-react";
@@ -12,6 +13,13 @@ interface DoctorCardProps {
 }
 
 const DoctorCard = ({ doctor, index, handleScheduleAppointment }: DoctorCardProps) => {
+  const navigate = useNavigate();
+  
+  const onScheduleClick = () => {
+    handleScheduleAppointment(doctor.id);
+    navigate(`/schedule/${doctor.id}`);
+  };
+  
   return (
     <Card 
       key={doctor.id}
@@ -80,7 +88,7 @@ const DoctorCard = ({ doctor, index, handleScheduleAppointment }: DoctorCardProp
             <div className="flex flex-col space-y-2 w-full md:w-auto">
               <Button 
                 className="bg-medical-500 hover:bg-medical-600 btn-hover"
-                onClick={() => handleScheduleAppointment(doctor.id)}
+                onClick={onScheduleClick}
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 Agendar consulta
