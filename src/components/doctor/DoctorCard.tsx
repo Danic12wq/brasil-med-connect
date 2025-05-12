@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Heart, Clock, Check } from "lucide-react";
@@ -13,11 +12,8 @@ interface DoctorCardProps {
 }
 
 const DoctorCard = ({ doctor, index, handleScheduleAppointment }: DoctorCardProps) => {
-  const navigate = useNavigate();
-  
   const onScheduleClick = () => {
     handleScheduleAppointment(doctor.id);
-    navigate(`/schedule/${doctor.id}`);
   };
   
   return (

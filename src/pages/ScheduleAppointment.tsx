@@ -3,16 +3,15 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { format, addDays, parse } from 'date-fns';
+import { supabase } from '@/lib/supabase';
+import { format, addDays } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Clock, CalendarIcon, ArrowRight } from 'lucide-react';
+import { Clock, ArrowRight } from 'lucide-react';
 
 interface DoctorDetails {
   id: string;
@@ -60,9 +59,11 @@ const ScheduleAppointment = () => {
   const { data: doctor, isLoading: isLoadingDoctor } = useQuery({
     queryKey: ['doctor', doctorId],
     queryFn: async () => {
+      if (!doctorId) throw new Error('Doctor ID is required');
+      
       const { data, error } = await supabase
         .from('doctors')
-        .select('id, full_name, specialty:specialty_id(name)')
+        .select('id, full_name, specialty_id, specialty:specialty_id(name)')
         .eq('id', doctorId)
         .single();
       

@@ -1,7 +1,28 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { supabase, Doctor, Specialty } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { useState, useCallback } from 'react';
+
+export type Doctor = {
+  id: string;
+  user_id: string;
+  full_name: string;
+  specialty_id: string;
+  crm: string;
+  bio: string;
+  experience_years: number;
+  phone: string;
+  address: string;
+  accepts_insurance: boolean;
+  created_at: string;
+}
+
+export type Specialty = {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+}
 
 export type DoctorWithSpecialty = Doctor & {
   specialty: Specialty | null;
