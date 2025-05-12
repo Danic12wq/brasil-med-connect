@@ -66,13 +66,10 @@ export const useAppointment = (doctorId: string | undefined, userId: string | un
         id: data.id,
         full_name: data.full_name,
         specialty: {
-          // Handle the case where specialty might be an array or an object
-          // If it's an array with at least one element, take the first element's name
-          // If it's an object, access its name property directly
-          // Otherwise, provide an empty string as fallback
+          // Fix the type issue by properly checking the specialty data structure
           name: Array.isArray(data.specialty) 
-                ? (data.specialty.length > 0 ? data.specialty[0].name : '') 
-                : (data.specialty?.name || '')
+                ? (data.specialty.length > 0 ? String(data.specialty[0]?.name || '') : '') 
+                : String(data.specialty?.name || '')
         }
       } as DoctorDetails;
     },
