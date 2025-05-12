@@ -67,7 +67,7 @@ export const useAppointment = (doctorId: string | undefined, userId: string | un
         id: data.id,
         full_name: data.full_name,
         specialty: {
-          name: data.specialty?.name
+          name: data.specialty ? data.specialty.name : ''
         }
       } as DoctorDetails;
     },
