@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -67,7 +66,13 @@ export const useAppointment = (doctorId: string | undefined, userId: string | un
         id: data.id,
         full_name: data.full_name,
         specialty: {
-          name: data.specialty ? data.specialty.name : ''
+          // Handle the case where specialty might be an array or an object
+          // If it's an array with at least one element, take the first element's name
+          // If it's an object, access its name property directly
+          // Otherwise, provide an empty string as fallback
+          name: Array.isArray(data.specialty) 
+                ? (data.specialty.length > 0 ? data.specialty[0].name : '') 
+                : (data.specialty?.name || '')
         }
       } as DoctorDetails;
     },
